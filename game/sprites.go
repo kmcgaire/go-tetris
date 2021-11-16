@@ -2,7 +2,7 @@ package game
 
 import (
 	"image"
-	_ "image/png"
+	"image/png"
 	"log"
 	"os"
 
@@ -46,7 +46,7 @@ func LoadSprites() (*Sprites, error) {
 	defer file.Close()
 
 	// Load Image
-	img, _, err := image.Decode(file)
+	img, err := png.Decode(file)
 	if err != nil {
 		log.Printf("Failed to decode image %v", err)
 		return nil, err
