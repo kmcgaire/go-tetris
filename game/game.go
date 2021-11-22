@@ -9,6 +9,7 @@ import (
 type Game struct {
 	*Sprites
 	NextPiece *Piece
+	Board     *Board
 }
 
 func (g *Game) Update() error {
@@ -18,21 +19,26 @@ func (g *Game) Update() error {
 		// For now only allow actions on first key press (will handle holding down keys later)
 		case ebiten.KeyArrowUp:
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) {
-				g.NextPiece = g.NextPiece.rotate()
+				g.Board.rotatePiece()
 			}
 		case ebiten.KeyArrowDown:
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) {
-				g.NextPiece = g.NextPiece.moveDown()
+				g.Board.movePiece(1, 0)
 			}
 		case ebiten.KeyArrowLeft:
 
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) {
-				g.NextPiece = g.NextPiece.moveLeft()
+				g.Board.movePiece(0, -1)
 			}
 		case ebiten.KeyArrowRight:
-
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) {
-				g.NextPiece = g.NextPiece.moveRight()
+				g.Board.movePiece(0, 1)
+			}
+		case ebiten.KeySpace:
+			if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+				g.Board.instafall()
+				g.Board.ActivePiece = g.NextPiece
+				g.NextPiece = GenerateRandomPiece(g.Sprites)
 			}
 		}
 	}
@@ -40,21 +46,29 @@ func (g *Game) Update() error {
 }
 
 func NewGame(s *Sprites) *Game {
-
-	return &Game{Sprites: s, NextPiece: GenerateRandomPiece()}
+	b := NewBoard(20, 10)
+	b.ActivePiece = GenerateRandomPiece(s)
+	// Hack for now to ensure its on the screen
+	b.ActivePiece.moveDown()
+	b.ActivePiece.moveDown()
+	b.ActivePiece.moveDown()
+	b.ActivePiece.moveRight()
+	b.ActivePiece.moveRight()
+	return &Game{Sprites: s, NextPiece: GenerateRandomPiece(s), Board: b}
 }
 
 func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
-	block := g.blocks[int(p.Block)]
+	block := g.blocks[p.Block]
 	for _, v := range p.Points {
 		options := &ebiten.DrawImageOptions{}
 		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
-		screen.DrawImage(block, options)
+		screen.DrawImage(block.Image, options)
 	}
 
 }
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.DrawPiece(500, 200, screen, g.NextPiece)
+	g.DrawPiece(600, 200, screen, g.NextPiece)
+	g.Board.Draw(50, 50, screen)
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
 
 }

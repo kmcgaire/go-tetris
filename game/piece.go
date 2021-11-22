@@ -24,17 +24,21 @@ type Coords struct {
 
 type Piece struct {
 	Shape
-	Block
+	*Sprite
 	Points []Coords
 }
 
 func (p *Piece) copy() *Piece {
-	np := *p
+	np := Piece{Shape: p.Shape, Sprite: p.Sprite, Points: make([]Coords, 4)}
 	copy(np.Points, p.Points)
 	return &np
 }
 
 func (p *Piece) rotate() *Piece {
+	// OPiece shouldn't be rotated
+	if p.Shape == OPiece {
+		return p
+	}
 	pivot := p.Points[1]
 	np := p.copy()
 	copy(np.Points, p.Points)
@@ -51,23 +55,23 @@ func (p *Piece) rotate() *Piece {
 	return np
 }
 
-func GenerateRandomPiece() *Piece {
+func GenerateRandomPiece(s *Sprites) *Piece {
 	i := rand.Intn(7)
 	switch i {
 	case 0:
-		return NewLPiece()
+		return NewLPiece(s)
 	case 1:
-		return NewIPiece()
+		return NewIPiece(s)
 	case 2:
-		return NewOPiece()
+		return NewOPiece(s)
 	case 3:
-		return NewTPiece()
+		return NewTPiece(s)
 	case 4:
-		return NewSPiece()
+		return NewSPiece(s)
 	case 5:
-		return NewZPiece()
+		return NewZPiece(s)
 	default:
-		return NewJPiece()
+		return NewJPiece(s)
 	}
 }
 
@@ -90,10 +94,10 @@ func (p *Piece) moveLeft() *Piece {
 	return p.move(0, -1)
 }
 
-func NewLPiece() *Piece {
+func NewLPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: LPiece,
-		Block: LightBlue,
+		Shape:  LPiece,
+		Sprite: &Sprite{LightBlue, s.blocks[LightBlue].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -104,10 +108,10 @@ func NewLPiece() *Piece {
 	return p
 }
 
-func NewIPiece() *Piece {
+func NewIPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: IPiece,
-		Block: Blue,
+		Shape:  IPiece,
+		Sprite: &Sprite{Blue, s.blocks[Blue].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -118,10 +122,10 @@ func NewIPiece() *Piece {
 	return p
 }
 
-func NewOPiece() *Piece {
+func NewOPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: OPiece,
-		Block: Pink,
+		Shape:  OPiece,
+		Sprite: &Sprite{Pink, s.blocks[Pink].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -132,10 +136,10 @@ func NewOPiece() *Piece {
 	return p
 }
 
-func NewTPiece() *Piece {
+func NewTPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: TPiece,
-		Block: Purple,
+		Shape:  TPiece,
+		Sprite: &Sprite{Purple, s.blocks[Purple].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -146,10 +150,10 @@ func NewTPiece() *Piece {
 	return p
 }
 
-func NewSPiece() *Piece {
+func NewSPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: SPiece,
-		Block: Red,
+		Shape:  SPiece,
+		Sprite: &Sprite{Red, s.blocks[Red].Image},
 		Points: []Coords{
 			{0, 0},
 			{0, 1},
@@ -160,10 +164,10 @@ func NewSPiece() *Piece {
 	return p
 }
 
-func NewZPiece() *Piece {
+func NewZPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: ZPiece,
-		Block: Yellow,
+		Shape:  ZPiece,
+		Sprite: &Sprite{Yellow, s.blocks[Yellow].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -174,10 +178,10 @@ func NewZPiece() *Piece {
 	return p
 }
 
-func NewJPiece() *Piece {
+func NewJPiece(s *Sprites) *Piece {
 	p := &Piece{
-		Shape: JPiece,
-		Block: Green,
+		Shape:  JPiece,
+		Sprite: &Sprite{Green, s.blocks[Green].Image},
 		Points: []Coords{
 			{1, 0},
 			{0, 1},

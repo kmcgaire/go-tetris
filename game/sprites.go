@@ -30,25 +30,30 @@ const (
 	Grey
 )
 
+type Sprite struct {
+	Block
+	Image *ebiten.Image
+}
+
 type Sprites struct {
-	blocks map[int]*ebiten.Image
+	blocks map[Block]*Sprite
 }
 
 type SubImager interface {
 	SubImage(r image.Rectangle) image.Image
 }
 
-func (s *Sprites) Block(i int) *ebiten.Image {
-	image := s.blocks[i]
-	if image == nil {
-		log.Fatalf("invalid image name: %d", i)
+func (s *Sprites) Block(b Block) *ebiten.Image {
+	sprite := s.blocks[b]
+	if sprite.Image == nil {
+		log.Fatalf("invalid image name: %d", b)
 	}
-	return image
+	return sprite.Image
 }
 
 func LoadSprites() (*Sprites, error) {
 	s := &Sprites{
-		blocks: make(map[int]*ebiten.Image),
+		blocks: make(map[Block]*Sprite),
 	}
 
 	file, err := os.Open(blocksPath)
@@ -70,7 +75,7 @@ func LoadSprites() (*Sprites, error) {
 		r := i / cols
 		c := i % cols
 		subImage := img.(SubImager).SubImage(image.Rect(c*tileSize, r*tileSize, (c+1)*tileSize, (r+1)*tileSize))
-		s.blocks[i+1] = ebiten.NewImageFromImage(subImage)
+		s.blocks[Block(i+1)] = &Sprite{Block(i + 1), ebiten.NewImageFromImage(subImage)}
 	}
 	log.Printf("Image Bounds: %v", img.Bounds())
 	return s, nil
