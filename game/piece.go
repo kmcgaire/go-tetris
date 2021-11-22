@@ -1,5 +1,7 @@
 package game
 
+import "math/rand"
+
 // Piece is a constant for a shape of piece. There are 7 classic pieces like L, and O
 type Shape int
 
@@ -38,6 +40,26 @@ func (p *Piece) rotate() *Piece {
 		np.Points[i] = Coords{pivot.R + (colDiff * -1), pivot.C + rowDiff}
 	}
 	return np
+}
+
+func GenerateRandomPiece() *Piece {
+	i := rand.Intn(7)
+	switch i {
+	case 0:
+		return NewLPiece()
+	case 1:
+		return NewIPiece()
+	case 2:
+		return NewOPiece()
+	case 3:
+		return NewTPiece()
+	case 4:
+		return NewSPiece()
+	case 5:
+		return NewZPiece()
+	default:
+		return NewJPiece()
+	}
 }
 
 func NewLPiece() *Piece {

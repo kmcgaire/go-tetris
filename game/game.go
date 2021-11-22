@@ -8,7 +8,7 @@ import (
 
 type Game struct {
 	*Sprites
-	Pieces []*Piece
+	NextPiece *Piece
 }
 
 func (g *Game) Update() error {
@@ -18,9 +18,10 @@ func (g *Game) Update() error {
 		case ebiten.KeyArrowUp:
 			// Only allow rotation on first key press
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) {
-				for i, p := range g.Pieces {
-					g.Pieces[i] = p.rotate()
-				}
+				// for i, p := range g.Pieces {
+				// 	g.Pieces[i] = p.rotate()
+				// }
+				g.NextPiece = g.NextPiece.rotate()
 			}
 			// When movement comes allow some sort key hold to move probably?
 		}
@@ -29,15 +30,8 @@ func (g *Game) Update() error {
 }
 
 func NewGame(s *Sprites) *Game {
-	return &Game{Sprites: s, Pieces: []*Piece{
-		NewLPiece(),
-		NewIPiece(),
-		NewOPiece(),
-		NewTPiece(),
-		NewSPiece(),
-		NewZPiece(),
-		NewJPiece(),
-	}}
+
+	return &Game{Sprites: s, NextPiece: GenerateRandomPiece()}
 }
 
 func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
@@ -50,9 +44,7 @@ func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
 
 }
 func (g *Game) Draw(screen *ebiten.Image) {
-	for i, p := range g.Pieces {
-		g.DrawPiece(40*3*i, 40*3*i, screen, p)
-	}
+	g.DrawPiece(500, 200, screen, g.NextPiece)
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000003", 20, 20)
 
 }
