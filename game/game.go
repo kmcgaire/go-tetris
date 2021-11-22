@@ -27,13 +27,18 @@ func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
 
 }
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.DrawPiece(50, 50, screen, NewLPiece())
-	g.DrawPiece(50*2, 50, screen, NewIPiece())
-	g.DrawPiece(50*4, 50, screen, NewOPiece())
-	g.DrawPiece(50*8, 50, screen, NewTPiece())
-	g.DrawPiece(50, 50*4, screen, NewSPiece())
-	g.DrawPiece(50, 50*8, screen, NewZPiece())
-	g.DrawPiece(50*4, 50*8, screen, NewJPiece())
+	pieces := []*Piece{
+		NewLPiece(),
+		NewIPiece(),
+		NewOPiece(),
+		NewTPiece(),
+		NewSPiece(),
+		NewZPiece(),
+		NewJPiece(),
+	}
+	for i, p := range pieces {
+		g.DrawPiece(40*2*i, 50, screen, p)
+	}
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000003", 20, 20)
 
 }
