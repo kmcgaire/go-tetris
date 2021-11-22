@@ -24,6 +24,22 @@ type Piece struct {
 	Points [4]Coords
 }
 
+func (p *Piece) rotate() *Piece {
+	pivot := p.Points[1]
+	np := &Piece{p.Shape, p.Block, [4]Coords{{}, pivot, {}, {}}}
+	for i, v := range p.Points {
+		if i == 1 {
+			continue
+		}
+		rowDiff := pivot.R - v.R
+		colDiff := pivot.C - v.C
+		// New Row is how far the old column was away from the pivot but multiplied by -1
+		// New Column is how far away the old row was from the pivot
+		np.Points[i] = Coords{pivot.R + (colDiff * -1), pivot.C + rowDiff}
+	}
+	return np
+}
+
 func NewLPiece() *Piece {
 	p := &Piece{
 		Shape: LPiece,
@@ -71,10 +87,10 @@ func NewTPiece() *Piece {
 		Shape: TPiece,
 		Block: Purple,
 		Points: [4]Coords{
-			{0, 0},
-			{0, 1},
+			{1, 0},
 			{1, 1},
 			{1, 2},
+			{0, 1},
 		},
 	}
 	return p
@@ -85,10 +101,10 @@ func NewSPiece() *Piece {
 		Shape: SPiece,
 		Block: Red,
 		Points: [4]Coords{
-			{1, 0},
-			{1, 1},
+			{0, 0},
 			{0, 1},
-			{0, 2},
+			{1, 1},
+			{1, 2},
 		},
 	}
 	return p
@@ -100,8 +116,8 @@ func NewZPiece() *Piece {
 		Block: Yellow,
 		Points: [4]Coords{
 			{1, 0},
+			{1, 1},
 			{0, 1},
-			{0, 0},
 			{0, 2},
 		},
 	}
@@ -114,9 +130,9 @@ func NewJPiece() *Piece {
 		Block: Green,
 		Points: [4]Coords{
 			{1, 0},
-			{1, 1},
-			{1, 2},
+			{0, 1},
 			{0, 0},
+			{0, 2},
 		},
 	}
 	return p
