@@ -15,15 +15,25 @@ func (g *Game) Update() error {
 	var keys []ebiten.Key
 	for _, key := range inpututil.AppendPressedKeys(keys) {
 		switch key {
+		// For now only allow actions on first key press (will handle holding down keys later)
 		case ebiten.KeyArrowUp:
-			// Only allow rotation on first key press
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowUp) {
-				// for i, p := range g.Pieces {
-				// 	g.Pieces[i] = p.rotate()
-				// }
 				g.NextPiece = g.NextPiece.rotate()
 			}
-			// When movement comes allow some sort key hold to move probably?
+		case ebiten.KeyArrowDown:
+			if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) {
+				g.NextPiece = g.NextPiece.moveDown()
+			}
+		case ebiten.KeyArrowLeft:
+
+			if inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) {
+				g.NextPiece = g.NextPiece.moveLeft()
+			}
+		case ebiten.KeyArrowRight:
+
+			if inpututil.IsKeyJustPressed(ebiten.KeyArrowRight) {
+				g.NextPiece = g.NextPiece.moveRight()
+			}
 		}
 	}
 	return nil
@@ -38,14 +48,14 @@ func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
 	block := g.blocks[int(p.Block)]
 	for _, v := range p.Points {
 		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x+(v.R*40)), float64(y+(v.C*40)))
+		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
 		screen.DrawImage(block, options)
 	}
 
 }
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.DrawPiece(500, 200, screen, g.NextPiece)
-	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000003", 20, 20)
+	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
 
 }
 

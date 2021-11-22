@@ -1,6 +1,8 @@
 package game
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 // Piece is a constant for a shape of piece. There are 7 classic pieces like L, and O
 type Shape int
@@ -23,12 +25,19 @@ type Coords struct {
 type Piece struct {
 	Shape
 	Block
-	Points [4]Coords
+	Points []Coords
+}
+
+func (p *Piece) copy() *Piece {
+	np := *p
+	copy(np.Points, p.Points)
+	return &np
 }
 
 func (p *Piece) rotate() *Piece {
 	pivot := p.Points[1]
-	np := &Piece{p.Shape, p.Block, [4]Coords{{}, pivot, {}, {}}}
+	np := p.copy()
+	copy(np.Points, p.Points)
 	for i, v := range p.Points {
 		if i == 1 {
 			continue
@@ -62,11 +71,30 @@ func GenerateRandomPiece() *Piece {
 	}
 }
 
+func (p *Piece) move(r, c int) *Piece {
+	np := p.copy()
+	for i, v := range p.Points {
+		np.Points[i].R = v.R + r
+		np.Points[i].C = v.C + c
+	}
+	return np
+}
+
+func (p *Piece) moveDown() *Piece {
+	return p.move(1, 0)
+}
+func (p *Piece) moveRight() *Piece {
+	return p.move(0, 1)
+}
+func (p *Piece) moveLeft() *Piece {
+	return p.move(0, -1)
+}
+
 func NewLPiece() *Piece {
 	p := &Piece{
 		Shape: LPiece,
 		Block: LightBlue,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{1, 1},
 			{1, 2},
@@ -80,7 +108,7 @@ func NewIPiece() *Piece {
 	p := &Piece{
 		Shape: IPiece,
 		Block: Blue,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{1, 1},
 			{1, 2},
@@ -94,7 +122,7 @@ func NewOPiece() *Piece {
 	p := &Piece{
 		Shape: OPiece,
 		Block: Pink,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{1, 1},
 			{0, 0},
@@ -108,7 +136,7 @@ func NewTPiece() *Piece {
 	p := &Piece{
 		Shape: TPiece,
 		Block: Purple,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{1, 1},
 			{1, 2},
@@ -122,7 +150,7 @@ func NewSPiece() *Piece {
 	p := &Piece{
 		Shape: SPiece,
 		Block: Red,
-		Points: [4]Coords{
+		Points: []Coords{
 			{0, 0},
 			{0, 1},
 			{1, 1},
@@ -136,7 +164,7 @@ func NewZPiece() *Piece {
 	p := &Piece{
 		Shape: ZPiece,
 		Block: Yellow,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{1, 1},
 			{0, 1},
@@ -150,7 +178,7 @@ func NewJPiece() *Piece {
 	p := &Piece{
 		Shape: JPiece,
 		Block: Green,
-		Points: [4]Coords{
+		Points: []Coords{
 			{1, 0},
 			{0, 1},
 			{0, 0},
