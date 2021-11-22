@@ -15,9 +15,7 @@ func main() {
 		log.Fatalf("Could not generate sprites %v", err)
 		return
 	}
-	game := &game.Game{
-		Sprites: s,
-	}
+	game := game.NewGame(s)
 
 	// Specify the window size as you like. Here, a doubled size is specified.
 	ebiten.SetWindowSize(1000, 1000)

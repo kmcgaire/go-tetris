@@ -16,6 +16,20 @@ const (
 	tileSize   = 40
 )
 
+type Block int
+
+const (
+	Empty Block = iota
+	LightBlue
+	Blue
+	Pink
+	Purple
+	Red
+	Yellow
+	Green
+	Grey
+)
+
 type Sprites struct {
 	blocks map[int]*ebiten.Image
 }
@@ -56,7 +70,7 @@ func LoadSprites() (*Sprites, error) {
 		r := i / cols
 		c := i % cols
 		subImage := img.(SubImager).SubImage(image.Rect(c*tileSize, r*tileSize, (c+1)*tileSize, (r+1)*tileSize))
-		s.blocks[i] = ebiten.NewImageFromImage(subImage)
+		s.blocks[i+1] = ebiten.NewImageFromImage(subImage)
 	}
 	log.Printf("Image Bounds: %v", img.Bounds())
 	return s, nil
