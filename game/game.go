@@ -10,12 +10,14 @@ import (
 
 type Game struct {
 	*Sprites
-	NextPiece *Piece
-	Board     *Board
+	NextPiece        *Piece
+	Board            *Board
+	gravityTickCount int
 }
 
 func (g *Game) Update() error {
 	var keys []ebiten.Key
+	g.gravityTickCount++
 	for _, key := range inpututil.AppendPressedKeys(keys) {
 		switch key {
 		// For now only allow actions on first key press (will handle holding down keys later)
@@ -25,6 +27,7 @@ func (g *Game) Update() error {
 			}
 		case ebiten.KeyArrowDown:
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowDown) {
+				g.gravityTickCount = 0
 				g.Board.movePiece(1, 0)
 			}
 		case ebiten.KeyArrowLeft:
@@ -38,12 +41,21 @@ func (g *Game) Update() error {
 			}
 		case ebiten.KeySpace:
 			if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+				g.gravityTickCount = 0
 				g.Board.instafall()
 				log.Printf("Deleted %d rows", g.Board.ClearLines())
 				g.Board.ActivePiece = g.NextPiece
 				g.NextPiece = GenerateRandomPiece(g.Sprites)
 			}
 		}
+	}
+	if g.gravityTickCount > 60 {
+		if g.Board.applyGravity() {
+			g.Board.ClearLines()
+			g.Board.ActivePiece = g.NextPiece
+			g.NextPiece = GenerateRandomPiece(g.Sprites)
+		}
+		g.gravityTickCount = 0
 	}
 	return nil
 }
