@@ -2,6 +2,8 @@ package game
 
 import (
 	"math/rand"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Piece is a constant for a shape of piece. There are 7 classic pieces like L, and O
@@ -32,6 +34,14 @@ func (p *Piece) copy() *Piece {
 	np := Piece{Shape: p.Shape, Sprite: p.Sprite, Points: make([]Coords, 4)}
 	copy(np.Points, p.Points)
 	return &np
+}
+
+func (p *Piece) Draw(x, y int, screen *ebiten.Image) {
+	for _, v := range p.Points {
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
+		screen.DrawImage(p.Image, options)
+	}
 }
 
 func (p *Piece) rotate() *Piece {

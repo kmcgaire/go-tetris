@@ -14,6 +14,7 @@ type Game struct {
 	Board            *Board
 	gravityTickCount int
 	score            int
+	level            int
 }
 
 func (g *Game) Update() error {
@@ -60,7 +61,9 @@ func (g *Game) Update() error {
 func (g *Game) clearLines() {
 	linesCleared := g.Board.ClearLines()
 	// Bonus points for clearing more lines
-	g.score += linesCleared*200 + (linesCleared-1)*300
+	if linesCleared > 0 {
+		g.score += linesCleared*200 + (linesCleared-1)*300
+	}
 	g.Board.ActivePiece = g.NextPiece
 	g.NextPiece = GenerateRandomPiece(g.Sprites)
 }
@@ -68,30 +71,15 @@ func (g *Game) clearLines() {
 func NewGame(s *Sprites) *Game {
 	b := NewBoard(20, 10)
 	b.ActivePiece = GenerateRandomPiece(s)
-	// Hack for now to ensure its on the screen
-	b.ActivePiece.moveDown()
-	b.ActivePiece.moveDown()
-	b.ActivePiece.moveDown()
-	b.ActivePiece.moveRight()
-	b.ActivePiece.moveRight()
 	return &Game{Sprites: s, NextPiece: GenerateRandomPiece(s), Board: b}
 }
 
-func (g *Game) DrawPiece(x, y int, screen *ebiten.Image, p *Piece) {
-	block := g.blocks[p.Block]
-	for _, v := range p.Points {
-		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
-		screen.DrawImage(block.Image, options)
-	}
-
-}
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.DrawPiece(600, 200, screen, g.NextPiece)
+	g.NextPiece.Draw(600, 200, screen)
 	g.Board.Draw(50, 50, screen)
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Score: %d", g.score), 700, 20)
-
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("level: %d", g.level), 700, 40)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {

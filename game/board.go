@@ -129,9 +129,5 @@ func (b *Board) Draw(x, y int, screen *ebiten.Image) {
 			}
 		}
 	}
-	for _, v := range b.ActivePiece.Points {
-		options := &ebiten.DrawImageOptions{}
-		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
-		screen.DrawImage(b.ActivePiece.Image, options)
-	}
+	b.ActivePiece.Draw(x, y, screen)
 }
