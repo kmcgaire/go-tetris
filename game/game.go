@@ -1,7 +1,7 @@
 package game
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
@@ -13,6 +13,7 @@ type Game struct {
 	NextPiece        *Piece
 	Board            *Board
 	gravityTickCount int
+	score            int
 }
 
 func (g *Game) Update() error {
@@ -43,21 +44,25 @@ func (g *Game) Update() error {
 			if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 				g.gravityTickCount = 0
 				g.Board.instafall()
-				log.Printf("Deleted %d rows", g.Board.ClearLines())
-				g.Board.ActivePiece = g.NextPiece
-				g.NextPiece = GenerateRandomPiece(g.Sprites)
+				g.clearLines()
 			}
 		}
 	}
 	if g.gravityTickCount > 60 {
 		if g.Board.applyGravity() {
-			g.Board.ClearLines()
-			g.Board.ActivePiece = g.NextPiece
-			g.NextPiece = GenerateRandomPiece(g.Sprites)
+			g.clearLines()
 		}
 		g.gravityTickCount = 0
 	}
 	return nil
+}
+
+func (g *Game) clearLines() {
+	linesCleared := g.Board.ClearLines()
+	// Bonus points for clearing more lines
+	g.score += linesCleared*200 + (linesCleared-1)*300
+	g.Board.ActivePiece = g.NextPiece
+	g.NextPiece = GenerateRandomPiece(g.Sprites)
 }
 
 func NewGame(s *Sprites) *Game {
@@ -85,6 +90,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	g.DrawPiece(600, 200, screen, g.NextPiece)
 	g.Board.Draw(50, 50, screen)
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
+	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Score: %d", g.score), 700, 20)
 
 }
 
