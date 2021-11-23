@@ -1,6 +1,8 @@
 package game
 
 import (
+	"log"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -37,6 +39,7 @@ func (g *Game) Update() error {
 		case ebiten.KeySpace:
 			if inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 				g.Board.instafall()
+				log.Printf("Deleted %d rows", g.Board.ClearLines())
 				g.Board.ActivePiece = g.NextPiece
 				g.NextPiece = GenerateRandomPiece(g.Sprites)
 			}
