@@ -67,19 +67,19 @@ func (g *Game) clearLines() {
 	// Bonus points for clearing more lines
 	if linesCleared > 0 {
 		g.score += (linesCleared*200 + (linesCleared-1)*300) * g.level
-		if g.score >= 10000 {
+		if g.score >= 50000 {
 			g.level = 8
-		} else if g.score >= 5000 {
+		} else if g.score >= 39000 {
 			g.level = 7
-		} else if g.score >= 3000 {
+		} else if g.score >= 27000 {
 			g.level = 6
-		} else if g.score >= 2500 {
+		} else if g.score >= 18000 {
 			g.level = 5
-		} else if g.score >= 1000 {
+		} else if g.score >= 10000 {
 			g.level = 4
-		} else if g.score >= 800 {
+		} else if g.score >= 4000 {
 			g.level = 3
-		} else if g.score >= 300 {
+		} else if g.score >= 1500 {
 			g.level = 2
 		}
 	}
@@ -101,7 +101,7 @@ func NewGame(s *Sprites) *Game {
 func (g *Game) Draw(screen *ebiten.Image) {
 	g.NextPiece.Draw(600, 200, screen)
 	g.Board.Draw(50, 50, screen)
-	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
+	ebitenutil.DebugPrintAt(screen, "Tetris: Very Alpha Version", 20, 20)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Score: %d", g.score), 700, 20)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("level: %d", g.level), 700, 40)
 	if g.gameOver {

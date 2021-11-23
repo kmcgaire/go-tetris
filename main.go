@@ -2,14 +2,16 @@ package main
 
 import (
 	"log"
+	"math/rand"
 	"tetris/game"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Llongfile)
-
+	rand.Seed(time.Now().UnixNano())
 	s, err := game.LoadSprites()
 	if err != nil {
 		log.Fatalf("Could not generate sprites %v", err)
