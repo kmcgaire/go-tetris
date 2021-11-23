@@ -16,9 +16,13 @@ type Game struct {
 	gravityTickCount float64
 	score            int
 	level            int
+	gameOver         bool
 }
 
 func (g *Game) Update() error {
+	if g.gameOver {
+		return nil
+	}
 	var keys []ebiten.Key
 	g.gravityTickCount++
 	for _, key := range inpututil.AppendPressedKeys(keys) {
@@ -34,7 +38,6 @@ func (g *Game) Update() error {
 				g.Board.movePiece(1, 0)
 			}
 		case ebiten.KeyArrowLeft:
-
 			if inpututil.IsKeyJustPressed(ebiten.KeyArrowLeft) {
 				g.Board.movePiece(0, -1)
 			}
@@ -82,6 +85,11 @@ func (g *Game) clearLines() {
 	}
 	g.Board.ActivePiece = g.NextPiece
 	g.NextPiece = GenerateRandomPiece(g.Sprites)
+	for i := 0; i < len(g.Board.Grid[0]) && g.Board.movePiece(0, i); i++ {
+		if i == len(g.Board.Grid[0])-1 {
+			g.gameOver = true
+		}
+	}
 }
 
 func NewGame(s *Sprites) *Game {
@@ -96,6 +104,9 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	ebitenutil.DebugPrintAt(screen, "Tetris V 0.0000010", 20, 20)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Score: %d", g.score), 700, 20)
 	ebitenutil.DebugPrintAt(screen, fmt.Sprintf("level: %d", g.level), 700, 40)
+	if g.gameOver {
+		ebitenutil.DebugPrintAt(screen, fmt.Sprintf("Game Over!! Score: %d Level: %d", g.score, g.level), 200, 20)
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
