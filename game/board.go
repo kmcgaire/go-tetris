@@ -129,5 +129,9 @@ func (b *Board) Draw(x, y int, screen *ebiten.Image) {
 			}
 		}
 	}
+	oldPiece := b.ActivePiece.copy()
+	b.instafall()
+	b.ActivePiece.DrawShadow(x, y, screen)
+	b.ActivePiece = oldPiece
 	b.ActivePiece.Draw(x, y, screen)
 }

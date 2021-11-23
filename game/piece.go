@@ -44,6 +44,14 @@ func (p *Piece) Draw(x, y int, screen *ebiten.Image) {
 	}
 }
 
+func (p *Piece) DrawShadow(x, y int, screen *ebiten.Image) {
+	for _, v := range p.Points {
+		options := &ebiten.DrawImageOptions{}
+		options.GeoM.Translate(float64(x+(v.C*40)), float64(y+(v.R*40)))
+		screen.DrawImage(p.ShadowImage, options)
+	}
+}
+
 func (p *Piece) rotate() *Piece {
 	// OPiece shouldn't be rotated
 	if p.Shape == OPiece {
@@ -107,7 +115,7 @@ func (p *Piece) moveLeft() *Piece {
 func NewLPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  LPiece,
-		Sprite: &Sprite{LightBlue, s.blocks[LightBlue].Image},
+		Sprite: &Sprite{LightBlue, s.blocks[LightBlue].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -121,7 +129,7 @@ func NewLPiece(s *Sprites) *Piece {
 func NewIPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  IPiece,
-		Sprite: &Sprite{Blue, s.blocks[Blue].Image},
+		Sprite: &Sprite{Blue, s.blocks[Blue].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -135,7 +143,7 @@ func NewIPiece(s *Sprites) *Piece {
 func NewOPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  OPiece,
-		Sprite: &Sprite{Pink, s.blocks[Pink].Image},
+		Sprite: &Sprite{Pink, s.blocks[Pink].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -149,7 +157,7 @@ func NewOPiece(s *Sprites) *Piece {
 func NewTPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  TPiece,
-		Sprite: &Sprite{Purple, s.blocks[Purple].Image},
+		Sprite: &Sprite{Purple, s.blocks[Purple].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -163,7 +171,7 @@ func NewTPiece(s *Sprites) *Piece {
 func NewSPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  SPiece,
-		Sprite: &Sprite{Red, s.blocks[Red].Image},
+		Sprite: &Sprite{Red, s.blocks[Red].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{0, 0},
 			{0, 1},
@@ -177,7 +185,7 @@ func NewSPiece(s *Sprites) *Piece {
 func NewZPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  ZPiece,
-		Sprite: &Sprite{Yellow, s.blocks[Yellow].Image},
+		Sprite: &Sprite{Yellow, s.blocks[Yellow].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{1, 1},
@@ -191,7 +199,7 @@ func NewZPiece(s *Sprites) *Piece {
 func NewJPiece(s *Sprites) *Piece {
 	p := &Piece{
 		Shape:  JPiece,
-		Sprite: &Sprite{Green, s.blocks[Green].Image},
+		Sprite: &Sprite{Green, s.blocks[Green].Image, s.blocks[Grey].Image},
 		Points: []Coords{
 			{1, 0},
 			{0, 1},

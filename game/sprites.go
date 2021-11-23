@@ -32,7 +32,8 @@ const (
 
 type Sprite struct {
 	Block
-	Image *ebiten.Image
+	Image       *ebiten.Image
+	ShadowImage *ebiten.Image
 }
 
 type Sprites struct {
@@ -75,7 +76,7 @@ func LoadSprites() (*Sprites, error) {
 		r := i / cols
 		c := i % cols
 		subImage := img.(SubImager).SubImage(image.Rect(c*tileSize, r*tileSize, (c+1)*tileSize, (r+1)*tileSize))
-		s.blocks[Block(i+1)] = &Sprite{Block(i + 1), ebiten.NewImageFromImage(subImage)}
+		s.blocks[Block(i+1)] = &Sprite{Block(i + 1), ebiten.NewImageFromImage(subImage), nil}
 	}
 	log.Printf("Image Bounds: %v", img.Bounds())
 	return s, nil
